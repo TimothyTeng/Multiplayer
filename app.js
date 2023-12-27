@@ -1,6 +1,7 @@
 var mongojs = require("mongojs");
 var db = mongojs('mongodb+srv://Timothy:6UowQMAZz4ce8cyN@gamedatabase.wsvnmwo.mongodb.net/?retryWrites=true&w=majority', ['account', 'progress'])
 
+
 var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
@@ -14,16 +15,28 @@ console.log("Server started")
 
 var SOCKET_LIST = {};
 
+//Entity({x:"20"}) example of overiding
 
-
-var Entity = function(){
+var Entity = function(param){
     var self = {
         x:250,
         y:250,
         spdX:0,
         spdY:0,
-        id:""
+        id:"",
+        map:'forest'
     }
+    if(param){
+        if(param.x)
+            self.x = param.x
+        if(param.y)
+            self.y = param.y
+        if(param.map)
+            self.map = param.map
+        if(param.id)
+            self.id = param.id
+    }
+
     self.update = function(){
         self.updatePosition();
     }
@@ -40,9 +53,8 @@ var Entity = function(){
 
 
 
-var Player = function(id){ //created a class called player
-    var self = Entity();
-    self.id = id;
+var Player = function(param){ //created a class called player
+    var self = Entity(param);
     self.number = "" + Math.floor(10*Math.random());
     self.pressingRight = false; //checks if the client is pressing right left up or down
     self.pressingLeft = false;
@@ -64,11 +76,13 @@ var Player = function(id){ //created a class called player
         }
     }
     self.shootBullet = function(angle){
-        var b = Bullet(self.id, angle); //creates a bullet entity
-        b.x = self.x; //sets its x and y to the player's position
-        b.y = self.y;
-        b.spdX = Math.cos(angle / 180 * Math.PI) * 10; //sets the speed the bullet travels in the x and y direction
-        b.spdY = Math.sin(angle / 180 * Math.PI) * 10;
+        var b = Bullet({
+            parent:self.id, 
+            angle:angle,
+            x:self.x,
+            y:self.y,
+            map:self.map
+        }); //creates a bullet entity
     }
 
     self.updateSpd = function(){
@@ -95,6 +109,7 @@ var Player = function(id){ //created a class called player
             hp: self.hp,
             hpMax:self.hpMax,
             score:self.score,
+            map:self.map,
         }
     }
     self.getUpdatePack = function(){
@@ -107,14 +122,22 @@ var Player = function(id){ //created a class called player
         }
     }
 
-    Player.list[id] = self; //adds the player to the player list
+    Player.list[self.id] = self; //adds the player to the player list
     initPack.player.push(self.getInitPack())
     return self;
 }
 Player.list = {};
 
 Player.onConnect = function(socket){
-    var player = Player(socket.id);
+    var map = 'forest';
+    if (Math.random()<0.5){
+        map = 'field'
+    }
+    
+    var player = Player({
+        id:socket.id,
+        map:map
+    });
     socket.on('keyPress', function(data){ //collects the data from the key press
         if(data.inputId === 'left')
             player.pressingLeft = data.state; //state would be true or false based on the client
@@ -163,12 +186,13 @@ Player.update = function(){
 
 
 
-var Bullet = function(parent,angle){
-    var self = Entity(); //creates a subclass
+var Bullet = function(param){
+    var self = Entity(param); //creates a subclass
     self.id = Math.random(); //makes each bullet unique
-    self.spdX = Math.cos(angle/180*Math.PI)*10;
-    self.spdY = Math.sin(angle/180*Math.PI)*10;
-    self.parent = parent; // sets the person which it comes from
+    self.angle = param.angle;
+    self.spdX = Math.cos(param.angle/180*Math.PI)*10;
+    self.spdY = Math.sin(param.angle/180*Math.PI)*10;
+    self.parent = param.parent; // sets the person which it comes from
     self.timer = 0
     self.toRemove = false;
     var super_update = self.update;
@@ -178,7 +202,7 @@ var Bullet = function(parent,angle){
         super_update();
         for(var i in Player.list){
             var p = Player.list[i];
-            if(self.getDistance(p) < 32 && self.parent !== p.id){
+            if(self.map === p.map && self.getDistance(p) < 32 && self.parent !== p.id){
                 p.hp -= 1
                 if(p.hp <= 0){
                     var shooter = Player.list[self.parent];
@@ -197,6 +221,7 @@ var Bullet = function(parent,angle){
             id: self.id,
             x: self.x,
             y: self.y,
+            map:self.map,
         }
     }
     self.getUpdatePack = function(){
