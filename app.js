@@ -343,7 +343,6 @@ io.sockets.on('connection', function(socket){
 
 
 var initPack = {player:[], bullet:[]};
-console.log(initPack)
 var removePack = {player:[], bullet:[]};
 
 
