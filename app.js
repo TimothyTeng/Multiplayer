@@ -119,6 +119,7 @@ var Player = function(param){ //created a class called player
             y: self.y,
             hp: self.hp,
             score:self.score,
+            map: self.map,
         }
     }
 
@@ -151,6 +152,13 @@ Player.onConnect = function(socket){
             player.pressingAttack = data.state;
         else if(data.inputId === 'mouseAngle')
             player.mouseAngle = data.state;
+    });
+
+    socket.on('changeMap', function(data){
+        if(player.map === 'field')
+            player.map = 'forest';
+        else    
+            player.map = 'field';
     });
 
     socket.emit('init', {
@@ -354,9 +362,11 @@ setInterval(function(){
 
     for(var i in SOCKET_LIST){
         var socket = SOCKET_LIST[i];
-        socket.emit('init', initPack);
-        socket.emit('update', pack);
-        socket.emit('remove', removePack)
+        if(socket.connected){
+            socket.emit('init', initPack);
+            socket.emit('update', pack);
+            socket.emit('remove', removePack);
+        }
     }
     initPack.player = [];
     initPack.bullet = [];
