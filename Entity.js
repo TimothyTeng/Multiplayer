@@ -5,8 +5,8 @@ var removePack = {player:[], bullet:[]};
 
 Entity = function(param){
     var self = {
-        x:250,
-        y:250,
+        x:500,
+        y:300,
         spdX:0,
         spdY:0,
         id:"",
@@ -71,6 +71,8 @@ Player = function(param){ //created a class called player
     self.pressingDown = false;
     self.pressingAttack = false;
     self.mouseAngle = 0; //what angle the client is facing
+    self.defaultAttackSpeed = 80;
+    self.attackSpeed = self.defaultAttackSpeed;
     self.maxSpd = 10; //how many pixels the player moves
     self.hp = 10;
     self.hpMax = 10;
@@ -82,8 +84,13 @@ Player = function(param){ //created a class called player
     self.update = function(){
         self.updateSpd();
         super_update();
-        if(self.pressingAttack){
+        if(self.pressingAttack && self.attackSpeed === 100){
             self.shootBullet(self.mouseAngle); //if the mouse is clicked shoot bullets at that angle
+            self.attackSpeed = self.defaultAttackSpeed
+        }
+        else if(self.pressingAttack && self.attackSpeed !== 100){
+            console.log(self.attackSpeed)
+            self.attackSpeed += 5
         }
     }
     self.shootBullet = function(angle){
@@ -124,7 +131,7 @@ Player = function(param){ //created a class called player
             hpMax:self.hpMax,
             score:self.score,
             map:self.map,
-        }
+        }//add attackSpeed if needed
     }
     self.getUpdatePack = function(){
         return {
@@ -166,8 +173,9 @@ Player.onConnect = function(socket, username, progress){
             player.pressingUp = data.state;
         else if(data.inputId === 'down')
             player.pressingDown = data.state;
-        else if(data.inputId === 'attack')
+        else if(data.inputId === 'attack'){
             player.pressingAttack = data.state;
+        }  
         else if(data.inputId === 'mouseAngle')
             player.mouseAngle = data.state;
     });

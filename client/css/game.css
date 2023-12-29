@@ -1,0 +1,28 @@
+#game{
+    position:absolute;
+    width:1000px;
+    height:600px;
+    margin-left:120px;
+}
+
+
+.ctxCSS{
+    position:absolute; 
+    border: 1px solid #000000;
+}
+
+#belowGame{
+    margin-top: 300px;
+    margin-left:370px;
+}
+
+#chat-text{
+    width:500px;
+    height:100px;
+    overflow-y:scroll;
+}
+
+.chatAbove{
+    position:absolute;
+    z-index: 1;
+}
