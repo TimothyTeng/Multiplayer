@@ -58,7 +58,18 @@ Entity.getFrameUpdateData = function(){
     return pack;
 }
 
-
+/* async function onCooldown(duration){
+    if(duration===null){
+        return 0
+    }
+    setInterval(function(){
+        duration = duration-1
+        if(duration === 0){
+            return(duration)
+        }
+    }, 1000)
+    return duration 
+} */
 
 
 Player = function(param){ //created a class called player
@@ -70,6 +81,8 @@ Player = function(param){ //created a class called player
     self.pressingUp = false;
     self.pressingDown = false;
     self.pressingAttack = false;
+    self.pressingAbility1 = false;
+    self.pressingAbility2 = false;
     self.mouseAngle = 0; //what angle the client is facing
     self.defaultAttackSpeed = 80;
     self.attackSpeed = self.defaultAttackSpeed;
@@ -78,6 +91,7 @@ Player = function(param){ //created a class called player
     self.hpMax = 10;
     self.score = 0;
     self.inventory = new Inventory(param.progress.items, param.socket, true);
+    self.character = new FireAbilities([], param.socket, true);
     self.socket = param.socket;
 
     var super_update = self.update;
@@ -89,8 +103,23 @@ Player = function(param){ //created a class called player
             self.attackSpeed = self.defaultAttackSpeed
         }
         else if(self.pressingAttack && self.attackSpeed !== 100){
-            console.log(self.attackSpeed)
             self.attackSpeed += 5
+        }
+        if(self.pressingAbility1){
+            let item = Item.list[self.character.items[0].id]
+            if(item.onCooldown === false){
+                item.event(self);
+                item.onCooldown = true
+                item.checkCooldown(item.cooldown)
+            }
+        }
+        if(self.pressingAbility2){
+            let item = Item.list[self.character.items[1].id]
+            if(item.onCooldown === false){
+                item.event(self);
+                item.onCooldown = true
+                item.checkCooldown(item.cooldown)
+            }
         }
     }
     self.shootBullet = function(angle){
@@ -164,6 +193,9 @@ Player.onConnect = function(socket, username, progress){
         progress: progress,
     });
     player.inventory.refreshRender();
+    player.character.initialise();
+    player.character.refreshRender();
+
     socket.on('keyPress', function(data){ //collects the data from the key press
         if(data.inputId === 'left')
             player.pressingLeft = data.state; //state would be true or false based on the client
@@ -178,6 +210,10 @@ Player.onConnect = function(socket, username, progress){
         }  
         else if(data.inputId === 'mouseAngle')
             player.mouseAngle = data.state;
+        else if(data.inputId === 'ability1')
+            player.pressingAbility1 = data.state;
+        else if(data.inputId === 'ability2')
+            player.pressingAbility2 = data.state;
     });
 
     socket.on('sendMsgToServer', function(data){
@@ -252,8 +288,8 @@ Bullet = function(param){
     var self = Entity(param); //creates a subclass
     self.id = Math.random(); //makes each bullet unique
     self.angle = param.angle;
-    self.spdX = Math.cos(param.angle/180*Math.PI)*10;
-    self.spdY = Math.sin(param.angle/180*Math.PI)*10;
+    self.spdX = Math.cos(param.angle/180*Math.PI)*30;
+    self.spdY = Math.sin(param.angle/180*Math.PI)*30;
     self.parent = param.parent; // sets the person which it comes from
     self.timer = 0
     self.toRemove = false;

@@ -29,6 +29,7 @@
             </form>
         </div>
     </div>
+    <div id="abilities" style="margin-top:600px"></div>
 </div>
 
 <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
@@ -80,6 +81,12 @@
     var chatForm = document.getElementById('chat-form');
     socket.on('addToChat', function(data){
         chatText.innerHTML += '<div>' + data + '</div>';
+        chatText.style.display = 'inline-block'
+        setTimeout(function() {
+            if(chatSend.style.display === 'none'){
+                chatText.style.display = 'none'
+            }
+        }, 3000);
     });
     socket.on('evalAnswer', function(data){
         console.log(data);
@@ -112,6 +119,12 @@
     socket.on('updateInventory', function(items){
         inventory.items = items;
         inventory.refreshRender();
+    })
+
+    var abilities = new FireAbilities([], socket, false);
+    socket.on('updateAbilities', function(items){
+        abilities.items = items;
+        abilities.refreshRender();
     })
 
 
@@ -317,16 +330,26 @@
             socket.emit('keyPress', {inputId:'left', state:true});
         else if(event.keyCode === 87) //w
             socket.emit('keyPress', {inputId:'up', state:true});
+        else if(event.keyCode === 81) //q
+            socket.emit('keyPress', {inputId:'ability1', state:true});
+        else if(event.keyCode === 69) //e
+            socket.emit('keyPress', {inputId:'ability2', state:true});
     }
     document.onkeyup = function(event){
-        if(event.keyCode === 68) //d
+        if(event.keyCode === 68){ //d
             socket.emit('keyPress', {inputId:'right', state:false});
+        }
         else if(event.keyCode === 83) //s
             socket.emit('keyPress', {inputId:'down', state:false});
         else if(event.keyCode === 65) //a
             socket.emit('keyPress', {inputId:'left', state:false});
         else if(event.keyCode === 87) //w
             socket.emit('keyPress', {inputId:'up', state:false});
+        else if(event.keyCode === 81){ //q
+            socket.emit('keyPress', {inputId:'ability1', state:false});
+        }
+        else if(event.keyCode === 69) //e
+            socket.emit('keyPress', {inputId:'ability2', state:false});
     }
 
 
