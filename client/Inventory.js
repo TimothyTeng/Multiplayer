@@ -150,9 +150,23 @@ Item("superAttack", "Super Attack", function(player){
         player.shootBullet(i)
 }, 10)
 
-Item("fireWall", "Fire Wall", function(player){
+/* Item("fireWall", "Fire Wall", function(player){
     for(var i=0; i<120; i++)
         player.shootBullet(player.mouseAngle-(120/2)+i)
+}, 5) */
+
+Item("fireWall", "Fire Wall", function(player){
+    for(var i=0; i<120; i=i+10)
+        Bullet({
+            parent:player.id, 
+            angle:player.mouseAngle-(120/2)+i,
+            x:player.x,
+            y:player.y,
+            map:player.map,
+            damage:5,
+            attackId: "firewall",
+            speed: 10
+        });
 }, 5)
 
 

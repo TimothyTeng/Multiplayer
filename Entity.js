@@ -131,7 +131,9 @@ Player = function(param){ //created a class called player
             angle:angle,
             x:self.x,
             y:self.y,
-            map:self.map
+            map:self.map,
+            attackId:"normal",
+            speed: 30,
         }); //creates a bullet entity
     }
 
@@ -288,10 +290,19 @@ Bullet = function(param){
     var self = Entity(param); //creates a subclass
     self.id = Math.random(); //makes each bullet unique
     self.angle = param.angle;
-    self.spdX = Math.cos(param.angle/180*Math.PI)*30;
-    self.spdY = Math.sin(param.angle/180*Math.PI)*30;
+    self.speed = param.speed;
+    self.spdX = Math.cos(param.angle/180*Math.PI)*self.speed;
+    self.spdY = Math.sin(param.angle/180*Math.PI)*self.speed;
     self.parent = param.parent; // sets the person which it comes from
     self.timer = 0
+    self.damage = 1
+    self.attackId = "normal"
+    if(self.attackId){
+        self.attackId = param.attackId
+    }
+    if(param.damage){
+        self.damage = param.damage
+    }
     self.toRemove = false;
     var super_update = self.update;
     self.update = function(){
@@ -301,7 +312,7 @@ Bullet = function(param){
         for(var i in Player.list){
             var p = Player.list[i];
             if(self.map === p.map && self.getDistance(p) < 32 && self.parent !== p.id){
-                p.hp -= 1
+                p.hp -= self.damage
                 if(p.hp <= 0){
                     var shooter = Player.list[self.parent];
                     if(shooter)
@@ -320,6 +331,7 @@ Bullet = function(param){
             x: self.x,
             y: self.y,
             map:self.map,
+            attackId: self.attackId
         }
     }
     self.getUpdatePack = function(){

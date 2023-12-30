@@ -135,6 +135,8 @@
     Img.player.src = '/client/img/player.png';
     Img.bullet = new Image();
     Img.bullet.src = '/client/img/bullet.png';
+    Img.firewall = new Image();
+    Img.firewall.src = '/client/img/firewall.png';
     Img.map = []
     Img.map['field'] = new Image();
     Img.map['field'].src = '/client/img/map.png';
@@ -188,19 +190,38 @@
         self.x = initPack.x
         self.y = initPack.y
         self.map = initPack.map
+        self.attackId = initPack.attackId
 
         self.draw = function(){
             if(Player.list[selfId].map !== self.map)
                 return;
-            var width = Img.bullet.width/9;
-            var height = Img.bullet.height/9;
-            
-            var x = self.x - Player.list[selfId].x + WIDTH/2;
-            var y = self.y - Player.list[selfId].y + HEIGHT/2;
+            console.log(self.attackId)
+            if(self.attackId === "normal"){
+                console.log(self.attackId)
+                var width = Img.bullet.width/9;
+                var height = Img.bullet.height/9;
+                
+                var x = self.x - Player.list[selfId].x + WIDTH/2;
+                var y = self.y - Player.list[selfId].y + HEIGHT/2;
 
-            ctx.drawImage(Img.bullet,
-                0,0,Img.bullet.width, Img.bullet.height,
-                x-width/2, y-height/2, width, height);
+                ctx.drawImage(Img.bullet,
+                    0,0,Img.bullet.width, Img.bullet.height,
+                    x-width/2, y-height/2, width, height);
+            } 
+            
+            else if(self.attackId === "firewall"){
+                console.log(self.attackId)
+                var width = Img.firewall.width/9;
+                var height = Img.firewall.height/9;
+                
+                var x = self.x - Player.list[selfId].x + WIDTH/2;
+                var y = self.y - Player.list[selfId].y + HEIGHT/2;
+
+                ctx.drawImage(Img.firewall,
+                    0,0,Img.firewall.width, Img.firewall.height,
+                    x-width/2, y-height/2, width, height);
+            }
+                  
         }
 
         Bullet.list[self.id] = self
