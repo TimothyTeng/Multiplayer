@@ -106,19 +106,21 @@ Player = function(param){ //created a class called player
             self.attackSpeed += 5
         }
         if(self.pressingAbility1){
-            let item = Item.list[self.character.items[0].id]
+            let item = FireAbilities.list[self.character.items[0].id]
             if(item.onCooldown === false){
                 item.event(self);
                 item.onCooldown = true
                 item.checkCooldown(item.cooldown)
+                self.socket.emit("serverCooldown", {itemCooldown:true})
             }
         }
         if(self.pressingAbility2){
-            let item = Item.list[self.character.items[1].id]
+            let item = FireAbilities.list[self.character.items[1].id]
             if(item.onCooldown === false){
                 item.event(self);
                 item.onCooldown = true
                 item.checkCooldown(item.cooldown)
+                self.socket.emit("serverCooldown", {itemCooldown:true})
             }
         }
     }

@@ -195,9 +195,7 @@
         self.draw = function(){
             if(Player.list[selfId].map !== self.map)
                 return;
-            console.log(self.attackId)
             if(self.attackId === "normal"){
-                console.log(self.attackId)
                 var width = Img.bullet.width/9;
                 var height = Img.bullet.height/9;
                 
@@ -210,7 +208,6 @@
             } 
             
             else if(self.attackId === "firewall"){
-                console.log(self.attackId)
                 var width = Img.firewall.width/9;
                 var height = Img.firewall.height/9;
                 
