@@ -108,29 +108,29 @@ Player = function(param){ //created a class called player
         }
         if(self.pressingAbility1){
             let item = FireAbilities.list[self.character.items[0].id]
-            if(item.onCooldown === false){
+            if(onCooldown1===false){
                 item.event(self);
-                item.onCooldown = true
-                item.checkCooldown(item.cooldown)
-                self.socket.emit("serverCooldown", {itemCooldown:true})
+                onCooldown1 = true
+                endCooldown1(FireAbilities.list[self.character.items[0].id].cooldown*1000)
+                self.socket.emit("Ability1Cooldown", {time:FireAbilities.list[self.character.items[0].id].cooldown*1000})
             }
         }
         if(self.pressingAbility2){
             let item = FireAbilities.list[self.character.items[1].id]
-            if(item.onCooldown === false){
+            if(onCooldown2===false){
                 item.event(self);
-                item.onCooldown = true
-                item.checkCooldown(item.cooldown)
-                self.socket.emit("serverCooldown", {itemCooldown:true})
+                onCooldown2 = true
+                endCooldown2(FireAbilities.list[self.character.items[1].id].cooldown*1000)
+                self.socket.emit("Ability2Cooldown", {time:FireAbilities.list[self.character.items[1].id].cooldown*1000})
             }
         }
         if(self.pressingAbility3){
             let item = FireAbilities.list[self.character.items[2].id]
-            if(item.onCooldown === false){
+            if(onCooldown3===false){
                 item.event(self);
-                item.onCooldown = true
-                item.checkCooldown(item.cooldown)
-                self.socket.emit("serverCooldown", {itemCooldown:true})
+                onCooldown3 = true
+                endCooldown3(FireAbilities.list[self.character.items[2].id].cooldown*1000)
+                self.socket.emit("Ability3Cooldown", {time:FireAbilities.list[self.character.items[2].id].cooldown*1000})
             }
         }
     }
@@ -192,6 +192,29 @@ Player = function(param){ //created a class called player
     return self;
 }
 Player.list = {};
+
+var onCooldown1 = false
+function endCooldown1(time){
+    onCooldown1 = true
+    setTimeout(function() {
+        onCooldown1 = false;
+    }, time);
+}
+var onCooldown2 = false
+function endCooldown2(time){
+    onCooldown2 = true
+    setTimeout(function() {
+        onCooldown2 = false;
+    }, time);
+}
+
+var onCooldown3 = false
+function endCooldown3(time){
+    onCooldown3 = true
+    setTimeout(function() {
+        onCooldown3 = false;
+    }, time);
+}
 
 Player.onConnect = function(socket, username, progress){
     var map = 'forest';
@@ -259,6 +282,16 @@ Player.onConnect = function(socket, username, progress){
         else    
             player.map = 'field';
     });
+
+    socket.on('clientAbilityCooldown1', function(data){
+        endCooldown1(data.time)
+    })
+    socket.on('clientAbilityCooldown2', function(data){
+        endCooldown2(data.time)
+    })
+    socket.on('clientAbilityCooldown3', function(data){
+        endCooldown3(data.time)
+    })
 
     socket.emit('init', {
         selfId: socket.id,

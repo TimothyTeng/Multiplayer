@@ -29,7 +29,11 @@
             </form>
         </div>
     </div>
-    <div id="abilities" style="margin-top:600px"></div>
+    <div id="abilities" style="margin-top:600px">
+        <button id="ability1">""</button>
+        <button id="ability2">""</button>
+        <button id="ability3">""</button>
+    </div>
 </div>
 
 <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
@@ -293,6 +297,31 @@
         }
     })
 
+    socket.on('Ability1Cooldown', function(data){
+        ability1 = document.getElementById("ability1")
+        ability1.disabled = true;
+        setTimeout(function(){
+            ability1.disabled = false;
+            console.log("Hi I finish working")
+        }, data.time)
+    })
+    socket.on('Ability2Cooldown', function(data){
+        ability2 = document.getElementById("ability2")
+        ability2.disabled = true;
+        setTimeout(function(){
+            ability2.disabled = false;
+            console.log("Hi I finish working")
+        }, data.time)
+    })
+    socket.on('Ability3Cooldown', function(data){
+        ability3 = document.getElementById("ability3")
+        ability3.disabled = true;
+        setTimeout(function(){
+            ability3.disabled = false;
+            console.log("Hi I finish working")
+        }, data.time)
+    })
+
     setInterval(function(){
         if(!selfId){
             return;
@@ -348,8 +377,10 @@
             socket.emit('keyPress', {inputId:'left', state:true});
         else if(event.keyCode === 87) //w
             socket.emit('keyPress', {inputId:'up', state:true});
-        else if(event.keyCode === 81) //q
+        else if(event.keyCode === 81){ //q
             socket.emit('keyPress', {inputId:'ability1', state:true});
+            
+        }
         else if(event.keyCode === 69) //e
             socket.emit('keyPress', {inputId:'ability2', state:true});
         else if(event.keyCode === 82){

@@ -118,7 +118,7 @@ FireAbilities = function(items, socket, server){
             self.addItem("invincible", 1)
         }
 
-    self.addItem = function(id, amount){
+    self.addItem = function(id, amount, item){
         for(var i=0; i<self.items.length;i++){
             if(self.items[i].id === id){
                 self.items[i].amount += amount;
@@ -126,7 +126,7 @@ FireAbilities = function(items, socket, server){
                 return
             }
         }
-        self.items.push({id:id, amount:amount})
+        self.items.push({id:id, amount:amount, item:item})
         self.refreshRender();
     }
 
@@ -159,31 +159,78 @@ FireAbilities = function(items, socket, server){
         }
         //client only
         var inventory = document.getElementById("abilities")
-        inventory.innerHTML = "";
+        /*
         var addButton = function(data){
             let item = FireAbilities.list[data.id]
             let button = document.createElement('button');
             button.onclick = function(){
                 self.socket.emit("useAbility", item.id);
+                button.disabled = true;
             }
-            button.innerText = item.name + " x" + data.amount
+            button.innerText = item.name
             inventory.appendChild(button);
         }
-        for(var i=0 ; i<self.items.length; i++){
-            addButton(self.items[i]);
+        */
+        abilityNum = ["ability1","ability2","ability3"]
+        ability1 = document.getElementById("ability1")
+        if(self.items[0]){
+            ability1.innerText = self.items[0].id
         }
+
+        ability2 = document.getElementById("ability2")
+        if(self.items[1]){
+            ability2.innerText = self.items[1].id
+        }
+        ability3 = document.getElementById("ability3")
+        if(self.items[2]){
+            ability3.innerText = self.items[2].id
+        }
+        ability1.onclick = function(){
+            console.log("Hi I am working")
+            self.socket.emit("useAbility", FireAbilities.list[self.items[0].id].id);
+            ability1.disabled = true;
+            self.socket.emit("clientAbilityCooldown1", {time: FireAbilities.list[self.items[0].id].cooldown*1000})
+            setTimeout(function(){
+                ability1.disabled = false;
+                console.log("Hi I finish working")
+            }, FireAbilities.list[self.items[0].id].cooldown*1000)
+        }
+        ability2.onclick = function(){
+            self.socket.emit("useAbility", FireAbilities.list[self.items[1].id].id);
+            ability2.disabled = true;
+            self.socket.emit("clientAbilityCooldown2", {time: FireAbilities.list[self.items[1].id].cooldown*1000})
+            setTimeout(function(){
+                ability2.disabled = false;
+            }, FireAbilities.list[self.items[1].id].cooldown*1000)
+        }
+
+        ability3.onclick = function(){
+            self.socket.emit("useAbility", FireAbilities.list[self.items[2].id].id);
+            ability3.disabled = true;
+            self.socket.emit("clientAbilityCooldown3", {time: FireAbilities.list[self.items[2].id].cooldown*1000})
+            setTimeout(function(){
+                ability3.disabled = false;
+            }, FireAbilities.list[self.items[2].id].cooldown*1000)
+        }
+
+
+        
+
+        /* for(var i=0 ; i<self.items.length; i++){
+            addButton(self.items[i]);
+        } */
     }
     if(self.server){
         socket.on("useAbility", function(itemId){
             let item = FireAbilities.list[itemId]
-            if(item.onCooldown){
+            item.event(Player.list[self.socket.id]);
+/*             if(item.onCooldown){
                 return
             }
-            else{
-                item.event(Player.list[self.socket.id]);
-                item.onCooldown = true
+            else{ */
+            /*     item.onCooldown = true
                 item.checkCooldown(item.cooldown)
-            }
+            } */
         })
     }
 
