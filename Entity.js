@@ -83,6 +83,7 @@ Player = function(param){ //created a class called player
     self.pressingAttack = false;
     self.pressingAbility1 = false;
     self.pressingAbility2 = false;
+    self.pressingAbility3 = false;
     self.mouseAngle = 0; //what angle the client is facing
     self.defaultAttackSpeed = 80;
     self.attackSpeed = self.defaultAttackSpeed;
@@ -116,6 +117,15 @@ Player = function(param){ //created a class called player
         }
         if(self.pressingAbility2){
             let item = FireAbilities.list[self.character.items[1].id]
+            if(item.onCooldown === false){
+                item.event(self);
+                item.onCooldown = true
+                item.checkCooldown(item.cooldown)
+                self.socket.emit("serverCooldown", {itemCooldown:true})
+            }
+        }
+        if(self.pressingAbility3){
+            let item = FireAbilities.list[self.character.items[2].id]
             if(item.onCooldown === false){
                 item.event(self);
                 item.onCooldown = true
@@ -218,6 +228,8 @@ Player.onConnect = function(socket, username, progress){
             player.pressingAbility1 = data.state;
         else if(data.inputId === 'ability2')
             player.pressingAbility2 = data.state;
+        else if(data.inputId === 'ability3')
+            player.pressingAbility3 = data.state;
     });
 
     socket.on('sendMsgToServer', function(data){

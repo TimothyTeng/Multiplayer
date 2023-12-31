@@ -352,6 +352,9 @@
             socket.emit('keyPress', {inputId:'ability1', state:true});
         else if(event.keyCode === 69) //e
             socket.emit('keyPress', {inputId:'ability2', state:true});
+        else if(event.keyCode === 82){
+            socket.emit('keyPress', {inputId:'ability3', state:true});
+        }
     }
     document.onkeyup = function(event){
         if(event.keyCode === 68){ //d
@@ -368,6 +371,9 @@
         }
         else if(event.keyCode === 69) //e
             socket.emit('keyPress', {inputId:'ability2', state:false});
+        else if(event.keyCode === 82){//r
+            socket.emit('keyPress', {inputId:'ability3', state:false});
+        }
     }
 
 

@@ -113,9 +113,10 @@ FireAbilities = function(items, socket, server){
             server:server,
         }
         self.initialise = function(){
-        self.addItem("superAttack",1)
-        self.addItem("fireWall",1)
-    }
+            self.addItem("superAttack",1)
+            self.addItem("fireWall",1)
+            self.addItem("invincible", 1)
+        }
 
     self.addItem = function(id, amount){
         for(var i=0; i<self.items.length;i++){
@@ -217,5 +218,13 @@ Item("fireWall", "Fire Wall", function(player){
         speed: 10
     });
 }, 5, "FireAbility")
+
+Item("invincible", "Invincible", function(player){
+    prevHp = player.hp
+    player.hp = 1000000
+    setTimeout(function(){
+        player.hp = prevHp
+    }, 3000)
+}, 20, "FireAbility")
 
 
