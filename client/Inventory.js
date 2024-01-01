@@ -86,7 +86,7 @@ Item = function(id, name, event, cooldown, type){
         Item.list[self.id] = self;
     }
     else if(self.EntityType === "FireAbility"){
-        FireAbilities.list[self.id] = self;
+        Abilities_list[self.id] = self;
     }
 
     self.checkCooldown = async function(duration) {
@@ -159,19 +159,7 @@ FireAbilities = function(items, socket, server){
         }
         //client only
         var inventory = document.getElementById("abilities")
-        /*
-        var addButton = function(data){
-            let item = FireAbilities.list[data.id]
-            let button = document.createElement('button');
-            button.onclick = function(){
-                self.socket.emit("useAbility", item.id);
-                button.disabled = true;
-            }
-            button.innerText = item.name
-            inventory.appendChild(button);
-        }
-        */
-        abilityNum = ["ability1","ability2","ability3"]
+
         ability1 = document.getElementById("ability1")
         if(self.items[0]){
             ability1.innerText = self.items[0].id
@@ -186,57 +174,42 @@ FireAbilities = function(items, socket, server){
             ability3.innerText = self.items[2].id
         }
         ability1.onclick = function(){
-            console.log("Hi I am working")
-            self.socket.emit("useAbility", FireAbilities.list[self.items[0].id].id);
+            self.socket.emit("useAbility", Abilities_list[self.items[0].id].id);
             ability1.disabled = true;
-            self.socket.emit("clientAbilityCooldown1", {time: FireAbilities.list[self.items[0].id].cooldown*1000})
+            self.socket.emit("clientAbilityCooldown1", {time: Abilities_list[self.items[0].id].cooldown*1000})
             setTimeout(function(){
                 ability1.disabled = false;
-                console.log("Hi I finish working")
-            }, FireAbilities.list[self.items[0].id].cooldown*1000)
+            }, Abilities_list[self.items[0].id].cooldown*1000)
         }
         ability2.onclick = function(){
-            self.socket.emit("useAbility", FireAbilities.list[self.items[1].id].id);
+            self.socket.emit("useAbility", Abilities_list[self.items[1].id].id);
             ability2.disabled = true;
-            self.socket.emit("clientAbilityCooldown2", {time: FireAbilities.list[self.items[1].id].cooldown*1000})
+            self.socket.emit("clientAbilityCooldown2", {time: Abilities_list[self.items[1].id].cooldown*1000})
             setTimeout(function(){
                 ability2.disabled = false;
-            }, FireAbilities.list[self.items[1].id].cooldown*1000)
+            }, Abilities_list[self.items[1].id].cooldown*1000)
         }
 
         ability3.onclick = function(){
-            self.socket.emit("useAbility", FireAbilities.list[self.items[2].id].id);
+            self.socket.emit("useAbility", Abilities_list[self.items[2].id].id);
             ability3.disabled = true;
-            self.socket.emit("clientAbilityCooldown3", {time: FireAbilities.list[self.items[2].id].cooldown*1000})
+            self.socket.emit("clientAbilityCooldown3", {time: Abilities_list[self.items[2].id].cooldown*1000})
             setTimeout(function(){
                 ability3.disabled = false;
-            }, FireAbilities.list[self.items[2].id].cooldown*1000)
+            }, Abilities_list[self.items[2].id].cooldown*1000)
         }
-
-
-        
-
-        /* for(var i=0 ; i<self.items.length; i++){
-            addButton(self.items[i]);
-        } */
     }
+
     if(self.server){
         socket.on("useAbility", function(itemId){
-            let item = FireAbilities.list[itemId]
+            let item = Abilities_list[itemId]
             item.event(Player.list[self.socket.id]);
-/*             if(item.onCooldown){
-                return
-            }
-            else{ */
-            /*     item.onCooldown = true
-                item.checkCooldown(item.cooldown)
-            } */
         })
     }
 
     return self
 }
-FireAbilities.list = {}
+Abilities_list = {}
 
 Item("potion", "Potion", function(player){
     player.hp = 10;
@@ -247,11 +220,6 @@ Item("superAttack", "Super Attack", function(player){
     for(var i=0; i<360; i++)
         player.shootBullet(i)
 }, 10, "FireAbility")
-
-/* Item("fireWall", "Fire Wall", function(player){
-    for(var i=0; i<120; i++)
-        player.shootBullet(player.mouseAngle-(120/2)+i)
-}, 5) */
 
 Item("fireWall", "Fire Wall", function(player){
     Bullet({

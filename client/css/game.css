@@ -9,6 +9,33 @@
 .ctxCSS{
     position:absolute; 
     border: 1px solid #000000;
+    width: 1000px;
+    height:600px;
+}
+
+#ui{
+    position:absolute;
+    width:1000px;
+    height:600px;
+}
+
+#chat-text{
+    display:none;
+    color:white;
+}
+
+#chat-send{
+    display:none;
+}
+
+#chat-input{
+    width:500px
+}
+
+.changeMap{
+    position:absolute;
+    bottom:0px;
+    left:0px;
 }
 
 #belowGame{
@@ -25,4 +52,12 @@
 .chatAbove{
     position:absolute;
     z-index: 1;
+}
+
+#abilities{
+    margin-top:600px;
+}
+
+#gameDiv{
+    display:none;
 }

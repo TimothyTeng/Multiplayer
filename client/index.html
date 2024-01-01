@@ -10,8 +10,8 @@
     <div id="game">
         <canvas id="ctx" class="ctxCSS" width="1000" height="600"></canvas>
         <canvas id="ctx-ui" class="ctxCSS" width="1000" height="600"></canvas>
-        <div id="ui" style="position:absolute;width:1000px;height:600px">
-            <button onclick="changeMap()" style="position:absolute;bottom:0px;left:0px;">
+        <div id="ui">
+            <button onclick="changeMap()" class="changeMap">
                 Change Map
             </button>
         </div>
@@ -19,17 +19,17 @@
 
 
     <div id="belowGame" class="chatAbove">
-        <div id="chat-text" style="display:none;color:white">
+        <div id="chat-text">
             <div>Hello!</div>
         </div>
-        <div id="chat-send" style="display:none;">
+        <div id="chat-send">
             <div id="inventory"></div>
             <form id="chat-form">
-                <input id="chat-input" type="text" style="width:500px">
+                <input id="chat-input" type="text">
             </form>
         </div>
     </div>
-    <div id="abilities" style="margin-top:600px">
+    <div id="abilities">
         <button id="ability1">""</button>
         <button id="ability2">""</button>
         <button id="ability3">""</button>
@@ -51,8 +51,9 @@
     var signDivSignUp = document.getElementById('signDiv-signUp');
     var signDivPassword = document.getElementById("signDiv-password");
     var belowGame = document.getElementById('belowGame');
-    var chatText = document.getElementById('chat-text');
-    var chatSend = document.getElementById('chat-send');
+    if(!(document.cookie==="username=; password=" || document.cookie===undefined)){
+        socket.emit('signIn', {username:document.cookie.split("; ")[0].slice(9), password:document.cookie.split("; ")[1].slice(9)});
+    }
 
     signDivSignIn.onclick = function(){
         socket.emit('signIn', {username:signDivUsername.value, password:signDivPassword.value});
@@ -62,6 +63,8 @@
     }
     socket.on('signInResponse', function(data){
         if(data.success){
+            document.cookie = "username="+signDivUsername.value;
+            document.cookie = "password="+signDivPassword.value;
             signDiv.style.display = 'none';
             gameDiv.style.display = 'inline-block';
         }
@@ -72,7 +75,8 @@
 
     socket.on('signUpResponse', function(data){
         if(data.success){
-            alert('Sign up successful.')
+            signDiv.style.display = 'none';
+            gameDiv.style.display = 'inline-block';
         }
         else{
             alert('Sign up unsuccessful.')
@@ -82,6 +86,7 @@
     //chat
     var chatText = document.getElementById('chat-text');
     var chatInput = document.getElementById('chat-input');
+    var chatSend = document.getElementById('chat-send');
     var chatForm = document.getElementById('chat-form');
     socket.on('addToChat', function(data){
         chatText.innerHTML += '<div>' + data + '</div>';
@@ -180,7 +185,6 @@
             ctx.drawImage(Img.player,
                 0,0,Img.player.width, Img.player.height,
                 x-width/2, y-height/2, width, height);
-            //ctx.fillText(self.score, self.x, self.y-60);
         }
 
         Player.list[self.id] = self
@@ -302,7 +306,6 @@
         ability1.disabled = true;
         setTimeout(function(){
             ability1.disabled = false;
-            console.log("Hi I finish working")
         }, data.time)
     })
     socket.on('Ability2Cooldown', function(data){
@@ -310,7 +313,6 @@
         ability2.disabled = true;
         setTimeout(function(){
             ability2.disabled = false;
-            console.log("Hi I finish working")
         }, data.time)
     })
     socket.on('Ability3Cooldown', function(data){
@@ -318,7 +320,6 @@
         ability3.disabled = true;
         setTimeout(function(){
             ability3.disabled = false;
-            console.log("Hi I finish working")
         }, data.time)
     })
 

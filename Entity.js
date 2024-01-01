@@ -107,30 +107,30 @@ Player = function(param){ //created a class called player
             self.attackSpeed += 5
         }
         if(self.pressingAbility1){
-            let item = FireAbilities.list[self.character.items[0].id]
+            let item = Abilities_list[self.character.items[0].id]
             if(onCooldown1===false){
                 item.event(self);
                 onCooldown1 = true
-                endCooldown1(FireAbilities.list[self.character.items[0].id].cooldown*1000)
-                self.socket.emit("Ability1Cooldown", {time:FireAbilities.list[self.character.items[0].id].cooldown*1000})
+                endCooldown1(Abilities_list[self.character.items[0].id].cooldown*1000)
+                self.socket.emit("Ability1Cooldown", {time:Abilities_list[self.character.items[0].id].cooldown*1000})
             }
         }
         if(self.pressingAbility2){
-            let item = FireAbilities.list[self.character.items[1].id]
+            let item = Abilities_list[self.character.items[1].id]
             if(onCooldown2===false){
                 item.event(self);
                 onCooldown2 = true
-                endCooldown2(FireAbilities.list[self.character.items[1].id].cooldown*1000)
-                self.socket.emit("Ability2Cooldown", {time:FireAbilities.list[self.character.items[1].id].cooldown*1000})
+                endCooldown2(Abilities_list[self.character.items[1].id].cooldown*1000)
+                self.socket.emit("Ability2Cooldown", {time:Abilities_list[self.character.items[1].id].cooldown*1000})
             }
         }
         if(self.pressingAbility3){
-            let item = FireAbilities.list[self.character.items[2].id]
+            let item = Abilities_list[self.character.items[2].id]
             if(onCooldown3===false){
                 item.event(self);
                 onCooldown3 = true
-                endCooldown3(FireAbilities.list[self.character.items[2].id].cooldown*1000)
-                self.socket.emit("Ability3Cooldown", {time:FireAbilities.list[self.character.items[2].id].cooldown*1000})
+                endCooldown3(Abilities_list[self.character.items[2].id].cooldown*1000)
+                self.socket.emit("Ability3Cooldown", {time:Abilities_list[self.character.items[2].id].cooldown*1000})
             }
         }
     }
