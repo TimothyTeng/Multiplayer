@@ -81,6 +81,7 @@ Player = function(param){ //created a class called player
     self.inventory = new Inventory(param.progress.items, param.socket, true);
     self.character = new FireAbilities([], param.socket, true);
     self.socket = param.socket;
+    self.timer = new onCooldownTimer();
 
     var super_update = self.update;
     self.update = function(){
@@ -95,28 +96,28 @@ Player = function(param){ //created a class called player
         }
         if(self.pressingAbility1){
             let item = Abilities_list[self.character.items[0].id]
-            if(onCooldown1===false){
+            if(self.timer.onCooldown1===false){
                 item.event(self);
-                onCooldown1 = true
-                endCooldown1(Abilities_list[self.character.items[0].id].cooldown*1000)
+                self.timer.onCooldown1 = true
+                self.timer.endCooldown1(Abilities_list[self.character.items[0].id].cooldown*1000)
                 self.socket.emit("Ability1Cooldown", {time:Abilities_list[self.character.items[0].id].cooldown*1000})
             }
         }
         if(self.pressingAbility2){
             let item = Abilities_list[self.character.items[1].id]
-            if(onCooldown2===false){
+            if(self.timer.onCooldown2===false){
                 item.event(self);
-                onCooldown2 = true
-                endCooldown2(Abilities_list[self.character.items[1].id].cooldown*1000)
+                self.timer.onCooldown2 = true
+                self.timer.endCooldown2(Abilities_list[self.character.items[1].id].cooldown*1000)
                 self.socket.emit("Ability2Cooldown", {time:Abilities_list[self.character.items[1].id].cooldown*1000})
             }
         }
         if(self.pressingAbility3){
             let item = Abilities_list[self.character.items[2].id]
-            if(onCooldown3===false){
+            if(self.timer.onCooldown3===false){
                 item.event(self);
-                onCooldown3 = true
-                endCooldown3(Abilities_list[self.character.items[2].id].cooldown*1000)
+                self.timer.onCooldown3 = true
+                self.timer.endCooldown3(Abilities_list[self.character.items[2].id].cooldown*1000)
                 self.socket.emit("Ability3Cooldown", {time:Abilities_list[self.character.items[2].id].cooldown*1000})
             }
         }
@@ -181,27 +182,34 @@ Player = function(param){ //created a class called player
 }
 Player.list = {};
 
-var onCooldown1 = false
-function endCooldown1(time){
-    onCooldown1 = true
-    setTimeout(function() {
-        onCooldown1 = false;
-    }, time);
-}
-var onCooldown2 = false
-function endCooldown2(time){
-    onCooldown2 = true
-    setTimeout(function() {
-        onCooldown2 = false;
-    }, time);
-}
-
-var onCooldown3 = false
-function endCooldown3(time){
-    onCooldown3 = true
-    setTimeout(function() {
-        onCooldown3 = false;
-    }, time);
+class onCooldownTimer{
+    constructor(){
+        this.onCooldown1 = false
+        this.onCooldown2 = false
+        this.onCooldown3 = false
+    }
+    endCooldown1(time) {
+        this.onCooldown1 = true;
+    
+        setTimeout(() => {
+            this.onCooldown1 = false;
+        }, time);
+    }
+    
+    endCooldown2(time) {
+        this.onCooldown2 = true;
+    
+        setTimeout(() => {
+            this.onCooldown2 = false;
+        }, time);
+    }
+    endCooldown3(time) {
+        this.onCooldown3 = true;
+    
+        setTimeout(() => {
+            this.onCooldown3 = false;
+        }, time);
+    }
 }
 
 Player.onConnect = function(socket, username, progress){
@@ -272,13 +280,13 @@ Player.onConnect = function(socket, username, progress){
     });
 
     socket.on('clientAbilityCooldown1', function(data){
-        endCooldown1(data.time)
+        player.timer.endCooldown1(data.time)
     })
     socket.on('clientAbilityCooldown2', function(data){
-        endCooldown2(data.time)
+        player.timer.endCooldown2(data.time)
     })
     socket.on('clientAbilityCooldown3', function(data){
-        endCooldown3(data.time)
+        player.timer.endCooldown3(data.time)
     })
 
     socket.emit('init', {
