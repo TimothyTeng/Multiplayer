@@ -5,8 +5,8 @@ var removePack = {player:[], bullet:[]};
 
 Entity = function(param){
     var self = {
-        x:500,
-        y:300,
+        x:980,
+        y:140,
         spdX:0,
         spdY:0,
         id:"",

@@ -156,7 +156,9 @@
     Img.map['field'] = new Image();
     Img.map['field'].src = '/client/img/map.png';
     Img.map['forest'] = new Image();
-    Img.map['forest'].src = '/client/img/map2.png';
+    Img.map['forest'].src = '/client/img/map2.jpg';
+    Img.backgroundMap = new Image();
+    Img.backgroundMap.src = '/client/img/backgroundMap.jpg';
 
     var ctx = document.getElementById("ctx").getContext("2d");
     var ctxUi = document.getElementById("ctx-ui").getContext("2d");
@@ -367,7 +369,8 @@
         var player = Player.list[selfId];
         var x = WIDTH/2 - Player.list[selfId].x
         var y = HEIGHT/2 - Player.list[selfId].y
-        ctx.drawImage(Img.map[player.map],x,y, 1400, 1400);
+        ctx.drawImage(Img.backgroundMap,x-500,y-500,4686, 3765)
+        ctx.drawImage(Img.map[player.map],x,y, 3686, 2765);
     }
     var drawScore = function(){
         if(lastScore === Player.list[selfId].score)
