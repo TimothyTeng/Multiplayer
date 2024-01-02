@@ -73,7 +73,6 @@ io.sockets.on('connection', function(socket){
             }
             getPlayerProgress(data.username, function(progress){
                 Player.onConnect(socket, data.username, progress);
-                console.log(progress)
                 socket.emit("signInResponse", {success:true});
             })
         })

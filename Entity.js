@@ -58,19 +58,6 @@ Entity.getFrameUpdateData = function(){
     return pack;
 }
 
-/* async function onCooldown(duration){
-    if(duration===null){
-        return 0
-    }
-    setInterval(function(){
-        duration = duration-1
-        if(duration === 0){
-            return(duration)
-        }
-    }, 1000)
-    return duration 
-} */
-
 
 Player = function(param){ //created a class called player
     var self = Entity(param);
@@ -182,6 +169,7 @@ Player = function(param){ //created a class called player
             x: self.x,
             y: self.y,
             hp: self.hp,
+            hpMax:self.hpMax,
             score:self.score,
             map: self.map,
         }
@@ -331,7 +319,11 @@ Player.update = function(){
     return pack
 }
 
-
+function freeze(player, prevSpd){
+    setTimeout(function(){
+        player.maxSpd = prevSpd
+    }, 2000)
+}
 
 Bullet = function(param){
     var self = Entity(param); //creates a subclass
@@ -360,6 +352,11 @@ Bullet = function(param){
             var p = Player.list[i];
             if(self.map === p.map && self.getDistance(p) < 32 && self.parent !== p.id){
                 p.hp -= self.damage
+                if(self.attackId === "freeze"){
+                    prevSpeed = p.maxSpd
+                    p.maxSpd = 0
+                    freeze(p, prevSpeed)
+                } 
                 if(p.hp <= 0){
                     var shooter = Player.list[self.parent];
                     if(shooter)
@@ -378,7 +375,7 @@ Bullet = function(param){
             x: self.x,
             y: self.y,
             map:self.map,
-            attackId: self.attackId
+            attackId: self.attackId,
         }
     }
     self.getUpdatePack = function(){

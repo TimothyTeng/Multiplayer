@@ -51,7 +51,7 @@
     var signDivSignUp = document.getElementById('signDiv-signUp');
     var signDivPassword = document.getElementById("signDiv-password");
     var belowGame = document.getElementById('belowGame');
-    if(!(document.cookie==="username=; password=" || document.cookie===undefined)){
+    if(!(document.cookie==="username=; password=" || document.cookie===undefined || document.cookie==="")){
         socket.emit('signIn', {username:document.cookie.split("; ")[0].slice(9), password:document.cookie.split("; ")[1].slice(9)});
     }
 
@@ -176,7 +176,12 @@
             var y = self.y - Player.list[selfId].y + HEIGHT/2;
 
             var hpWidth = 30 * self.hp / self.hpMax;
-            ctx.fillStyle = 'red';
+            if(self.hpMax === 1000000){
+                ctx.fillStyle = 'yellow';
+            }
+            else{
+                ctx.fillStyle = 'red';
+            }
             ctx.fillRect(x - hpWidth/2, y-40, hpWidth, 4)
 
             var width = Img.player.width/5;
@@ -226,7 +231,18 @@
                     0,0,Img.firewall.width, Img.firewall.height,
                     x-width/2, y-height/2, width, height);
             }
-                  
+            
+            else if(self.attackId === "freeze"){
+                var width = Img.firewall.width/9;
+                var height = Img.firewall.height/9;
+                
+                var x = self.x - Player.list[selfId].x + WIDTH/2;
+                var y = self.y - Player.list[selfId].y + HEIGHT/2;
+
+                ctx.drawImage(Img.firewall,
+                    0,0,Img.firewall.width, Img.firewall.height,
+                    x-width/2, y-height/2, width, height);
+            }
         }
 
         Bullet.list[self.id] = self
@@ -266,6 +282,9 @@
                 }
                 if(pack.hp !== undefined){
                     p.hp = pack.hp
+                }
+                if(pack.hp !== undefined){
+                    p.hpMax = pack.hpMax
                 }
                 if(pack.score !== undefined){
                     p.score = pack.score
