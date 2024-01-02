@@ -38,6 +38,18 @@
     left:0px;
 }
 
+.changeMap{
+    position:absolute;
+    bottom:0px;
+    left:0px;
+}
+.changeHero{
+    position:absolute;
+    bottom:0px;
+    left:0px;
+    margin-left: 100px;
+}
+
 #belowGame{
     margin-top: 300px;
     margin-left:370px;

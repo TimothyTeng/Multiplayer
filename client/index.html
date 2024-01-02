@@ -14,6 +14,9 @@
             <button onclick="changeMap()" class="changeMap">
                 Change Map
             </button>
+            <button onclick="changeHero()" class="changeHero">
+                Change Hero
+            </button>
         </div>
     </div>
 
@@ -123,6 +126,9 @@
     var changeMap = function(){
         socket.emit('changeMap');
     }
+    var changeHero = function(){
+        socket.emit('changeHero');
+    } 
 
     var inventory = new Inventory([], socket, false);
     socket.on('updateInventory', function(items){

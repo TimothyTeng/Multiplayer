@@ -96,6 +96,7 @@ Item.list = {};
 
 FireAbilities = function(items, socket, server){
         var self ={
+            name:"FireAbilities",
             items:items,// {id:'ItemId', amount:1}
             socket:socket,
             server:server,
@@ -201,6 +202,7 @@ FireAbilities = function(items, socket, server){
 
 IceAbilities = function(items, socket, server){
     var self ={
+        name:"IceAbilities",
         items:items,// {id:'ItemId', amount:1}
         socket:socket,
         server:server,

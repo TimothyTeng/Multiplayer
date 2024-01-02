@@ -279,6 +279,20 @@ Player.onConnect = function(socket, username, progress){
             player.map = 'field';
     });
 
+    socket.on('changeHero', function(){
+        if(player.character.name === "FireAbilities"){
+            player.character = new IceAbilities([], player.socket, true);
+            player.character.initialise();
+            player.character.refreshRender();
+        }
+        else{
+            player.character = new FireAbilities([], player.socket, true);
+            player.character.initialise();
+            player.character.refreshRender();
+        }
+
+    })
+
     socket.on('clientAbilityCooldown1', function(data){
         player.timer.endCooldown1(data.time)
     })
